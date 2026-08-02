@@ -1,0 +1,1 @@
+export default function Agents(){return <main id="main" className="narrow stack"><p className="eyebrow">Draft helpers</p><h1>Capture and Structure</h1><p>Only deterministic local adapters are enabled. They use explicit input, return draft-only validated output, have no tools, use no sources, cost $0, and cannot publish.</p></main>}
