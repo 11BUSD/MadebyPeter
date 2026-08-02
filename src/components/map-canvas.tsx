@@ -1,0 +1,20 @@
+"use client";
+import {useCallback,useMemo,useState} from "react";
+import Link from "next/link";
+import {Background,Controls,ReactFlow,useEdgesState,useNodesState,type Edge,type Node} from "@xyflow/react";
+import "@xyflow/react/dist/style.css";
+import type {Neighborhood} from "@/domain/graph/model";
+
+function layout(data:Neighborhood):Node[]{return data.nodes.map((idea,index)=>{const focus=idea.id===data.focus.id;const angle=(Math.PI*2*Math.max(index-1,0))/Math.max(data.nodes.length-1,1);return{id:idea.id,position:focus?{x:360,y:190}:{x:360+Math.cos(angle)*270,y:190+Math.sin(angle)*170},data:{label:idea.title},style:{width:160,borderRadius:16,border:focus?"3px solid #315d46":"1px solid #9baa9e",background:focus?"#dfe8da":"#fffdf8",padding:12,color:"#1f2a24",fontWeight:700,boxShadow:"0 8px 20px rgba(31,42,36,.08)"}}})}
+function mapEdges(data:Neighborhood):Edge[]{return data.edges.map(edge=>({id:edge.id,source:edge.sourceNodeId,target:edge.targetNodeId,label:edge.relationType.replaceAll("_"," "),style:{stroke:"#667067"},labelStyle:{fontSize:11,fill:"#465148"}}))}
+
+export function MapCanvas({graphSlug,initial}:{graphSlug:string;initial:Neighborhood}){
+  const[nodes,setNodes,onNodesChange]=useNodesState(layout(initial));const[flowEdges,setEdges,onEdgesChange]=useEdgesState(mapEdges(initial));const[current,setCurrent]=useState(initial);const[history,setHistory]=useState<string[]>([]);const[busy,setBusy]=useState(false);const[message,setMessage]=useState("");
+  const load=useCallback(async(id:string,push=true)=>{setBusy(true);setMessage("");try{const response=await fetch(`/api/graphs/${encodeURIComponent(initial.focus.graphId)}/neighborhood?focus=${encodeURIComponent(id)}&limit=7`);if(!response.ok)throw new Error("request failed");const data=await response.json() as Neighborhood;if(push)setHistory(value=>[...value,current.focus.id]);setCurrent(data);setNodes(layout(data));setEdges(mapEdges(data))}catch{setMessage("The map could not expand. Use the connected ideas list below.")}finally{setBusy(false)}},[current.focus.id,initial.focus.graphId,setEdges,setNodes]);
+  const nodeById=useMemo(()=>new Map(current.nodes.map(idea=>[idea.id,idea])),[current.nodes]);
+  return <div className="map-wrap"><div className="map-toolbar" aria-label="Map tools"><button className="secondary" disabled={!history.length||busy} onClick={()=>{const id=history.at(-1);if(id){setHistory(value=>value.slice(0,-1));void load(id,false)}}}>Back</button><button className="secondary" disabled={busy} onClick={()=>void load(initial.focus.id)}>Home</button><Link className="button secondary" href={`/g/${graphSlug}`}>Story view</Link><Link href="/search">Search</Link></div>
+    <p className="fine" role="status" aria-live="polite">{busy?"Loading a bounded neighborhood…":message||`Focused on ${current.focus.title}. ${current.totalNeighbors} direct connections${current.truncated?"; some are grouped":""}.`}</p>
+    <div className="flow-shell" aria-label={`Map focused on ${current.focus.title}`}><ReactFlow nodes={nodes} edges={flowEdges} onNodesChange={onNodesChange} onEdgesChange={onEdgesChange} onNodeClick={(_,node)=>void load(node.id)} fitView minZoom={.45} maxZoom={1.6} nodesDraggable={false} nodesConnectable={false} elementsSelectable><Background color="#d7d4ca" gap={24}/><Controls showInteractive={false}/></ReactFlow></div>
+    <section className="map-list" aria-labelledby="map-list-title"><h2 id="map-list-title">Map as a list</h2><p className="fine">Every map action is available without dragging, zooming, or hover.</p><ul className="connection-list">{current.nodes.map(idea=><li key={idea.id}><span>{idea.id===current.focus.id&&<span className="tag">Focused</span>} {idea.title}</span><span className="actions"><button className="secondary small" disabled={busy} onClick={()=>void load(idea.id)}>Focus</button><Link href={`/i/${idea.slug}`}>Open →</Link></span></li>)}</ul><span className="skip-link">{nodeById.size} visible nodes</span></section>
+  </div>
+}
