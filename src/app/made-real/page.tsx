@@ -1,0 +1,1 @@
+export default function MadeReal(){return <main id="main" className="narrow stack"><p className="eyebrow">Outcomes</p><h1>Made Real</h1><p className="lede">A future record of prototypes, products, research, and other visible next steps. This MVP contains no claimed outcomes yet.</p></main>}

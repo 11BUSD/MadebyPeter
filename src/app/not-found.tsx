@@ -1,0 +1,1 @@
+import Link from "next/link";export default function NotFound(){return <main id="main" className="narrow stack"><p className="eyebrow">Not found</p><h1>This idea is not available.</h1><p>It may be private, unlisted under a different link, removed, or outside the enabled product.</p><Link className="button" href="/">Explore public ideas</Link></main>}
