@@ -1,0 +1,3 @@
+import {NextResponse} from "next/server";import {z} from "zod";import {getNeighborhood} from "@/lib/public-data";
+const querySchema=z.object({focus:z.string().min(1).max(100),limit:z.coerce.number().int().min(1).max(25).default(7)});
+export async function GET(request:Request,{params}:{params:Promise<{graphId:string}>}){const{graphId}=await params;const parsed=querySchema.safeParse(Object.fromEntries(new URL(request.url).searchParams));if(!parsed.success)return NextResponse.json({error:"Invalid neighborhood request"},{status:400});const data=await getNeighborhood(graphId,parsed.data.focus,parsed.data.limit);return NextResponse.json(data,{headers:{"Cache-Control":"public, max-age=60, stale-while-revalidate=300","X-Content-Type-Options":"nosniff"}})}

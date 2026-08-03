@@ -1,0 +1,2 @@
+import {CaptureFlow} from "@/components/capture-flow";
+export default async function NewIdeaPage({searchParams}:{searchParams:Promise<{source?:string;build?:string;published?:string}>}){const params=await searchParams;return <main id="main" className="narrow"><p className="eyebrow">Add an idea</p><h1>Catch it before it disappears.</h1><p className="lede">Three small steps: capture, check, choose who can see it.</p><CaptureFlow source={params.source||params.build} published={params.published==="demo"}/></main>}

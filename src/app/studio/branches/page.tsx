@@ -1,0 +1,1 @@
+export default function Branches(){return <main id="main" className="narrow stack"><p className="eyebrow">Studio</p><h1>Your branches</h1><p>Configured accounts see reference, fork, and remix derivatives here. Fixture mode contains no user branches.</p></main>}

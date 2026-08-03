@@ -1,0 +1,2 @@
+import {NextResponse} from "next/server";import {captureOutputSchema} from "@/domain/agents/contracts";import {deterministicStructureAgent} from "@/domain/agents/deterministic";
+export async function POST(request:Request){const parsed=captureOutputSchema.safeParse(await request.json());if(!parsed.success)return NextResponse.json({error:"Invalid structure input"},{status:400});return NextResponse.json(await deterministicStructureAgent.run(parsed.data),{headers:{"Cache-Control":"no-store"}})}

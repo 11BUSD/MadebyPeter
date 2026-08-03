@@ -1,0 +1,2 @@
+import AxeBuilder from "@axe-core/playwright";import {expect,test} from "@playwright/test";
+for(const route of ["/","/g/energy-systems","/i/liquefaction","/g/energy-systems/map","/new","/search?q=gas"]){test(`@a11y ${route} has no serious violations`,async({page})=>{await page.goto(route);await page.waitForLoadState("domcontentloaded");const results=await new AxeBuilder({page}).analyze();const blocking=results.violations.filter(item=>["critical","serious"].includes(item.impact||""));expect(blocking,blocking.map(item=>`${item.id}: ${item.help}`).join("\n")).toEqual([])})}

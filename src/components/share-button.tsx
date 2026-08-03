@@ -1,0 +1,3 @@
+"use client";
+import {useState} from "react";
+export function ShareButton({title,text}:{title:string;text:string}){const[state,setState]=useState("");async function share(){const url=window.location.href;try{if(navigator.share){await navigator.share({title,text,url});setState("Share sheet opened.")}else{await navigator.clipboard.writeText(url);setState("Link copied.")}}catch(error){if((error as Error).name!=="AbortError")setState("Could not share. Copy the address from your browser.")} }return <><button className="secondary" type="button" onClick={share}>Share</button><span className="fine" role="status" aria-live="polite">{state}</span></>}
