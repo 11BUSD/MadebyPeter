@@ -2,7 +2,7 @@
 
 | Route | Access | MVP behavior |
 |---|---|---|
-| `/` | public | Explore seeded public ideas |
+| `/` | public | Explore public ideas; show an honest project showcase when no public graph exists |
 | `/today` | public | Recent/featured public ideas, no paid rank |
 | `/search` | public | Query discoverable public ideas |
 | `/u/[username]` | public | Creator profile and featured graphs |
@@ -14,8 +14,9 @@
 | `/i/[ideaSlugOrId]/opengraph-image` | public idea | Dynamic landscape share image |
 | `/api/graphs/[graphId]/neighborhood` | visibility-aware | bounded progressive JSON traversal |
 | `/api/share/[nodeId]/[format]` | public idea | square/vertical/landscape image |
+| `/api/ideas` | authenticated | idempotently persist an approved capture draft; create a private first graph when needed |
 | `/auth/sign-in`, `/auth/callback` | public | Supabase passwordless/OAuth entry/callback |
-| `/new` | authenticated | Three-step capture |
+| `/new` | public-to-authenticated | Three-step capture; browser-session draft resumes after sign-in |
 | `/studio`, `/studio/graphs`, `/studio/graphs/[graphId]` | authenticated | creator workspace |
 | `/studio/ideas/[nodeId]`, `/studio/branches`, `/studio/agents` | authenticated | edit, lineage history, draft agents |
 | `/settings/profile`, `/settings/account`, `/settings/privacy`, `/settings/notifications`, `/settings/connected-accounts` | authenticated | identity, export/deletion, consent/preferences |

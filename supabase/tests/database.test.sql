@@ -1,9 +1,10 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(17);
+select plan(21);
 
 select ok((select relrowsecurity from pg_class where oid='public.nodes'::regclass),'nodes RLS is enabled');
 select ok((select relrowsecurity from pg_class where oid='public.lineage_links'::regclass),'lineage RLS is enabled');
+select ok((select relrowsecurity from pg_class where oid='public.capture_idempotency'::regclass),'capture idempotency RLS is enabled');
 select ok((select count(*) from pg_policies where schemaname='public') >= 20,'least-privilege policies are installed');
 select throws_ok($$update public.node_versions set title='forged' where true$$,'immutable record','node versions are immutable');
 insert into public.lineage_links(source_node_id,derived_node_id,source_version_id,source_creator_id,mode,license_snapshot_json,attribution_required,created_by,idempotency_key)
@@ -27,6 +28,9 @@ select is((select count(*) from public.nodes where id='53000000-0000-4000-8000-0
 select lives_ok($$select public.branch_idea('30000000-0000-0000-0000-000000000001','52000000-0000-4000-8000-000000000001','fork','branch-test-key','Forked lifecycle')$$,'owner branches public source');
 select lives_ok($$select public.branch_idea('30000000-0000-0000-0000-000000000001','52000000-0000-4000-8000-000000000001','fork','branch-test-key','Forked lifecycle')$$,'branch retry is idempotent');
 select is((select count(*) from public.lineage_links where created_by='51000000-0000-4000-8000-000000000001' and idempotency_key='branch-test-key'),1::bigint,'idempotent branch creates one lineage row');
+select lives_ok($$select public.capture_idea('52000000-0000-4000-8000-000000000001','Captured safely','A private captured idea','Body','idea','private',false,'capture-test-key')$$,'owner persists a captured idea');
+select lives_ok($$select public.capture_idea('52000000-0000-4000-8000-000000000001','Captured safely','A private captured idea','Body','idea','private',false,'capture-test-key')$$,'capture retry is idempotent');
+select is((select count(*) from public.nodes where title='Captured safely'),1::bigint,'idempotent capture creates one node');
 reset role;
 
 set local role authenticated;

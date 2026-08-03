@@ -68,7 +68,7 @@ Public reads use a stateless anonymous Supabase client and are constrained by RL
 
 Canonical content uses `nodes` + append-only `node_versions`; relationships use indexed `edges`; immutable `lineage_links` are separate from normal edges. Map traversal is depth-one and capped, while Story view remains the accessible default/list equivalent.
 
-See [product brief](docs/product-brief.md), [implementation plan](docs/implementation-plan.md), [data model](docs/data-model.md), [threat model](docs/threat-model.md), [route map](docs/route-map.md), and [ADRs](docs/decisions/).
+See [product brief](docs/product-brief.md), [implementation plan](docs/implementation-plan.md), [monetization brief](docs/monetization-brief.md), [data model](docs/data-model.md), [threat model](docs/threat-model.md), [route map](docs/route-map.md), and [ADRs](docs/decisions/).
 
 ## Security and privacy
 

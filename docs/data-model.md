@@ -13,7 +13,7 @@ Postgres UUID keys, UTC timestamps, strict foreign keys, explicit enums/checks, 
 | Area | Tables | Integrity notes |
 |---|---|---|
 | Identity | `profiles`, `social_links`, `email_consents` | usernames normalized case-insensitively; email stays in auth schema |
-| Graph | `graphs`, `graph_members`, `nodes`, `edges`, `graph_node_positions` | endpoints must belong to edge graph; `part_of` cycle checked |
+| Graph | `graphs`, `graph_members`, `nodes`, `edges`, `graph_node_positions`, `capture_idempotency` | endpoints must belong to edge graph; `part_of` cycle checked; capture retries create one node |
 | History | `node_versions`, `lineage_links`, `audit_events` | append-only; lineage snapshots source version/creator/licence |
 | Content | `artifacts`, `node_artifacts`, `sources`, `node_sources` | embeds allowlisted; private storage uses signed URLs |
 | Social | `bookmarks`, `follows` | exactly one follow target |
@@ -29,6 +29,7 @@ Marketplace records are TypeScript contracts and a documented future migration, 
 - A derivative never overwrites its source and snapshots the exact source version.
 - `part_of` cannot connect a node to itself or create a transitive cycle.
 - Fork/remix requests use an owner-scoped idempotency key.
+- Capture saves use an owner-scoped idempotency key and are committed in the same transaction as first-graph creation.
 - Unlisted records are accessible by exact identifier but excluded from public search/listing.
 - Private reads require ownership or active graph membership.
 
