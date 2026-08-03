@@ -52,7 +52,7 @@ begin
 
   insert into public.node_versions(node_id,version_number,title,summary,content_json,content_hash,created_by)
   select new_node,1,coalesce(nullif(p_title,''),v.title),v.summary,v.content_json,
-    encode(digest(coalesce(nullif(p_title,''),v.title)||v.summary||v.content_json::text,'sha256'),'hex'),actor
+    encode(extensions.digest(coalesce(nullif(p_title,''),v.title)||v.summary||v.content_json::text,'sha256'),'hex'),actor
   from public.node_versions v where v.id=source_row.current_version_id returning id into new_version;
   update public.nodes set current_version_id=new_version where id=new_node;
 

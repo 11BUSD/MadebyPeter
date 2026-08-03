@@ -64,3 +64,15 @@ from (values
  ('30000000-0000-0000-0000-000000000017','30000000-0000-0000-0000-000000000005','soundtrack_for'),
  ('30000000-0000-0000-0000-000000000018','30000000-0000-0000-0000-000000000014','soundtrack_for')
 ) e(source_id,target_id,relation) on conflict do nothing;
+
+insert into public.artifacts(id,owner_id,artifact_type,title,external_url,metadata_json)
+values
+ ('40000000-0000-0000-0000-000000000001','10000000-0000-0000-0000-000000000001','external_embed','−162°C — illustrative fallback','https://soundcloud.com/soundcloud','{"provider":"soundcloud","synthetic":true}'),
+ ('40000000-0000-0000-0000-000000000002','10000000-0000-0000-0000-000000000001','external_embed','Ship to Shore — illustrative fallback','https://soundcloud.com/soundcloud','{"provider":"soundcloud","synthetic":true}'),
+ ('40000000-0000-0000-0000-000000000003','10000000-0000-0000-0000-000000000001','external_embed','Regas — illustrative fallback','https://soundcloud.com/soundcloud','{"provider":"soundcloud","synthetic":true}')
+on conflict(id) do nothing;
+insert into public.node_artifacts(node_id,artifact_id,role,sort_order) values
+ ('30000000-0000-0000-0000-000000000016','40000000-0000-0000-0000-000000000001','external_embed',0),
+ ('30000000-0000-0000-0000-000000000017','40000000-0000-0000-0000-000000000002','external_embed',0),
+ ('30000000-0000-0000-0000-000000000018','40000000-0000-0000-0000-000000000003','external_embed',0)
+on conflict do nothing;

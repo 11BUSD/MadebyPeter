@@ -12,7 +12,7 @@ begin
   values(p_graph_id,actor,next_slug,trim(p_title),trim(p_summary),p_node_type,case when p_publish then 'published'::public.node_status else 'draft'::public.node_status end,'spark',p_visibility,case when p_visibility='private' then 'private' else 'attribution_requested' end,case when p_publish then now() end)
   returning id into new_node;
   insert into public.node_versions(node_id,version_number,title,summary,content_json,content_hash,created_by)
-  values(new_node,1,trim(p_title),trim(p_summary),jsonb_build_object('body',left(p_description,10000)),encode(digest(trim(p_title)||trim(p_summary)||left(p_description,10000),'sha256'),'hex'),actor)
+  values(new_node,1,trim(p_title),trim(p_summary),jsonb_build_object('body',left(p_description,10000)),encode(extensions.digest(trim(p_title)||trim(p_summary)||left(p_description,10000),'sha256'),'hex'),actor)
   returning id into new_version;
   update public.nodes set current_version_id=new_version where id=new_node;
   insert into public.audit_events(actor_user_id,event_type,resource_type,resource_id,metadata_json) values(actor,case when p_publish then 'node.published' else 'node.created' end,'node',new_node,'{}');
