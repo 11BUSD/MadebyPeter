@@ -32,14 +32,15 @@ npx supabase db reset
 npx supabase status
 ```
 
-Copy the local `API_URL` to `NEXT_PUBLIC_SUPABASE_URL` and `ANON_KEY` to `NEXT_PUBLIC_SUPABASE_ANON_KEY`. Never commit the service-role key.
+Copy the local `API_URL` to `NEXT_PUBLIC_SUPABASE_URL` and `ANON_KEY` to `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. The legacy `NEXT_PUBLIC_SUPABASE_ANON_KEY` name is also supported. Never commit the service-role key.
 
 ## Environment variables
 
 | Variable | Exposure | Required | Purpose |
 |---|---|---:|---|
 | `NEXT_PUBLIC_SUPABASE_URL` | browser-safe project URL | production | Supabase endpoint |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | browser-safe anon key | production | RLS-bound client access |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | browser-safe publishable key | production | RLS-bound client access |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | browser-safe legacy anon key | legacy projects only | fallback for older Supabase projects |
 | `NEXT_PUBLIC_SITE_URL` | public | yes | canonical/auth callback base |
 | `SUPABASE_SERVICE_ROLE_KEY` | server secret | only privileged workers | future admin/storage operations; unused by public routes |
 | `FEATURE_MARKETPLACE` | server | no; default `false` | gates non-production marketplace boundary |
