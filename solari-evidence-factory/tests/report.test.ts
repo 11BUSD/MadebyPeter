@@ -1,0 +1,4 @@
+import assert from "node:assert/strict";import test from "node:test";import {finalizeEvidence,normalizeText,renderReport} from "../src/report.js";
+test("normalizeText collapses whitespace",()=>assert.equal(normalizeText("  alpha \n beta\t gamma "),"alpha beta gamma"));
+test("evidence hashes deterministically",()=>{const b={url:"https://example.com",title:"Example",description:"demo",headings:["A"],links:[],capturedAt:"2026-08-31T00:00:00.000Z"};assert.equal(finalizeEvidence(b).sha256,finalizeEvidence(b).sha256)});
+test("report escapes source-controlled HTML",()=>{const e=finalizeEvidence({url:"https://example.com",title:"<script>x</script>",description:"safe",headings:[],links:[],capturedAt:"2026-08-31T00:00:00.000Z"});const html=renderReport(e);assert.ok(!html.includes("<script>x</script>"));assert.ok(html.includes("&lt;script&gt;x&lt;/script&gt;"))});
